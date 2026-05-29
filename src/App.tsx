@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import TTSPage from "./pages/TTSPage";
-import ASRPage from "./pages/ASRDashboard";
+import ASRPage from "./pages/ASRPage";
 
 export default function App() {
   return (

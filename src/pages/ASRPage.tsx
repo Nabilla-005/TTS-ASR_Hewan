@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+
 import {
   Box,
   Typography,
@@ -7,32 +8,53 @@ import {
   CardContent,
   LinearProgress,
   Chip,
-  Stack,
   Divider,
 } from "@mui/material";
 
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useNavigate } from "react-router-dom";
 
 export default function ASRPage() {
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioURL, setAudioURL] = useState<string | null>(null);
-  const [result, setResult] = useState<string>("");
-  const [confidence, setConfidence] = useState<number>(0);
-  const [mfcc, setMfcc] = useState<number[]>([]);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [isRecording, setIsRecording] =
+    useState(false);
+
+  const [audioURL, setAudioURL] =
+    useState<string | null>(null);
+
+  const [result, setResult] =
+    useState<string>("");
+
+  const [confidence, setConfidence] =
+    useState<number>(0);
+
+  const [mfcc, setMfcc] =
+    useState<number[]>([]);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const mediaRecorderRef =
+    useRef<MediaRecorder | null>(null);
+
   const chunksRef = useRef<Blob[]>([]);
 
   // 🎤 START RECORDING
   const startRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
 
-    const recorder = new MediaRecorder(stream);
+    const recorder =
+      new MediaRecorder(stream);
+
     mediaRecorderRef.current = recorder;
+
     chunksRef.current = [];
 
     recorder.ondataavailable = (e) => {
@@ -40,28 +62,50 @@ export default function ASRPage() {
     };
 
     recorder.onstop = async () => {
-      const blob = new Blob(chunksRef.current, {
-        type: "audio/webm",
-      });
+      const blob = new Blob(
+        chunksRef.current,
+        {
+          type: "audio/webm",
+        }
+      );
 
-      const url = URL.createObjectURL(blob);
+      const url =
+        URL.createObjectURL(blob);
+
       setAudioURL(url);
 
       setLoading(true);
 
       try {
-        const formData = new FormData();
-        formData.append("audio", blob);
+        const formData =
+          new FormData();
 
-        const res = await fetch("http://localhost:8000/api/asr", {
-          method: "POST",
-          body: formData,
-        });
+        formData.append(
+          "audio", 
+          blob, 
+          "recording.webm"
+        );
+
+        const res = await fetch(
+          "http://localhost:8000/api/asr",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         const data = await res.json();
+        console.log(data);
 
-        setResult(data.text || "Tidak terdeteksi");
-        setConfidence(data.confidence || 0);
+        setResult(
+          data.text ||
+            "Tidak terdeteksi"
+        );
+
+        setConfidence(
+          data.confidence || 0
+        );
+
         setMfcc(data.mfcc || []);
       } catch (err) {
         console.error(err);
@@ -71,12 +115,14 @@ export default function ASRPage() {
     };
 
     recorder.start();
+
     setIsRecording(true);
   };
 
   // ⛔ STOP RECORDING
   const stopRecording = () => {
     mediaRecorderRef.current?.stop();
+
     setIsRecording(false);
   };
 
@@ -85,49 +131,154 @@ export default function ASRPage() {
       sx={{
         minHeight: "100vh",
         p: 4,
-        background: "linear-gradient(135deg, #0f172a, #111827)",
-        color: "white",
+        background:
+          "linear-gradient(135deg,#fef6e4 0%,#fde2c4 40%,#d9f99d 100%)",
       }}
     >
       {/* HEADER */}
-      <Typography variant="h3" fontWeight="bold">
-        🎤 Dashboard ASR
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent:
+            "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
+          mb: 4,
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: "bold",
+              color: "#4b2e2e",
+            }}
+          >
+            🎤 Dashboard ASR
+          </Typography>
 
-      <Typography sx={{ opacity: 0.6, mb: 3 }}>
-        Uji coba Automatic Speech Recognition dengan rekaman suara
-      </Typography>
+          <Typography
+            sx={{
+              color: "#5b4636",
+              mt: 1,
+            }}
+          >
+            Automatic Speech Recognition
+            menggunakan MFCC dan SVM
+          </Typography>
+        </Box>
+
+        {/* BACK BUTTON */}
+        <Button
+          variant="outlined"
+          startIcon={
+            <ArrowBackRoundedIcon />
+          }
+          onClick={() => navigate("/")}
+          sx={{
+            borderRadius: "14px",
+            px: 3,
+            py: 1,
+            textTransform: "none",
+            fontWeight: "bold",
+            borderColor: "#ea580c",
+            color: "#ea580c",
+
+            "&:hover": {
+              borderColor: "#c2410c",
+              background:
+                "rgba(234,88,12,0.08)",
+            },
+          }}
+        >
+          Kembali Dashboard
+        </Button>
+      </Box>
 
       {/* CONTROL PANEL */}
-      <Card sx={{ borderRadius: 4, mb: 3 }}>
-        <CardContent>
-          <Stack direction="row" spacing={2} alignItems="center">
+      <Card
+        sx={{
+          borderRadius: 5,
+          mb: 4,
+          background:
+            "rgba(255,255,255,0.7)",
+          backdropFilter: "blur(10px)",
+          boxShadow:
+            "0 10px 30px rgba(0,0,0,0.08)",
+        }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: {
+                xs: "column",
+                sm: "row",
+              },
+              gap: 2,
+              alignItems: "center",
+            }}
+          >
             {!isRecording ? (
               <Button
                 variant="contained"
-                color="success"
                 startIcon={<MicIcon />}
                 onClick={startRecording}
+                sx={{
+                  borderRadius: "16px",
+                  px: 4,
+                  py: 1.5,
+                  textTransform:
+                    "none",
+                  fontWeight: "bold",
+                  background:
+                    "linear-gradient(90deg,#16a34a,#22c55e)",
+
+                  "&:hover": {
+                    background:
+                      "linear-gradient(90deg,#15803d,#16a34a)",
+                  },
+                }}
               >
                 Mulai Rekaman
               </Button>
             ) : (
               <Button
                 variant="contained"
-                color="error"
                 startIcon={<StopIcon />}
                 onClick={stopRecording}
+                sx={{
+                  borderRadius: "16px",
+                  px: 4,
+                  py: 1.5,
+                  textTransform:
+                    "none",
+                  fontWeight: "bold",
+                  background:
+                    "linear-gradient(90deg,#dc2626,#ef4444)",
+
+                  "&:hover": {
+                    background:
+                      "linear-gradient(90deg,#b91c1c,#dc2626)",
+                  },
+                }}
               >
                 Berhenti Rekaman
               </Button>
             )}
 
             {loading && (
-              <Typography sx={{ opacity: 0.7 }}>
+              <Typography
+                sx={{
+                  color: "#5b4636",
+                  fontWeight: 600,
+                }}
+              >
                 Memproses audio...
               </Typography>
             )}
-          </Stack>
+          </Box>
         </CardContent>
       </Card>
 
@@ -135,68 +286,129 @@ export default function ASRPage() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          gap: 3,
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: "1fr 1fr",
+          },
+          gap: 4,
         }}
       >
         {/* AUDIO */}
-        <Card sx={{ borderRadius: 4 }}>
-          <CardContent>
-            <Typography fontWeight="bold">
+        <Card
+          sx={{
+            borderRadius: 5,
+            background:
+              "rgba(255,255,255,0.7)",
+          }}
+        >
+          <CardContent sx={{ p: 4 }}>
+            <Typography
+              sx={{
+                fontWeight: "bold",
+                color: "#4b2e2e",
+                fontSize: 22,
+              }}
+            >
               🎧 Rekaman Audio
             </Typography>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 3 }} />
 
             {audioURL ? (
-              <audio controls src={audioURL} style={{ width: "100%" }} />
+              <audio
+                controls
+                src={audioURL}
+                style={{
+                  width: "100%",
+                }}
+              />
             ) : (
-              <Typography sx={{ opacity: 0.5 }}>
-                Rekaman audio akan muncul di sini setelah Anda berhenti merekam
+              <Typography
+                sx={{
+                  opacity: 0.6,
+                  color: "#5b4636",
+                }}
+              >
+                Rekaman audio akan
+                muncul di sini setelah
+                proses recording selesai
               </Typography>
             )}
           </CardContent>
         </Card>
 
         {/* RESULT */}
-        <Card sx={{ borderRadius: 4 }}>
-          <CardContent>
-            <Typography fontWeight="bold">
-              📝 Hasil Transkripsi 
+        <Card
+          sx={{
+            borderRadius: 5,
+            background:
+              "rgba(255,255,255,0.7)",
+          }}
+        >
+          <CardContent sx={{ p: 4 }}>
+            <Typography
+              sx={{
+                fontWeight: "bold",
+                color: "#4b2e2e",
+                fontSize: 22,
+              }}
+            >
+              📝 Hasil Transkripsi
             </Typography>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 3 }} />
 
             {result ? (
               <Chip
                 label={result}
-                color="primary"
                 sx={{
                   fontSize: 16,
-                  p: 2,
+                  p: 3,
                   fontWeight: "bold",
+                  background:
+                    "#16a34a",
+                  color: "white",
                 }}
               />
             ) : (
-              <Typography sx={{ opacity: 0.5 }}>
-                Hasil transkripsi akan muncul di sini
+              <Typography
+                sx={{
+                  opacity: 0.6,
+                  color: "#5b4636",
+                }}
+              >
+                Hasil transkripsi akan
+                muncul di sini
               </Typography>
             )}
 
-            <Box mt={3}>
-              <Typography>Confidence Score</Typography>
+            <Box sx={{ mt: 4 }}>
+              <Typography
+                sx={{
+                  color: "#5b4636",
+                  fontWeight: "bold",
+                }}
+              >
+                Confidence Score
+              </Typography>
 
               <LinearProgress
                 variant="determinate"
                 value={confidence}
                 sx={{
-                  height: 10,
-                  borderRadius: 5,
-                  mt: 1,
+                  height: 12,
+                  borderRadius: 10,
+                  mt: 1.5,
                 }}
               />
 
-              <Typography mt={1}>
+              <Typography
+                sx={{
+                  mt: 1,
+                  color: "#4b2e2e",
+                  fontWeight: "bold",
+                }}
+              >
                 {confidence.toFixed(1)}%
               </Typography>
             </Box>
@@ -204,77 +416,153 @@ export default function ASRPage() {
         </Card>
       </Box>
 
-      {/* MFCC SECTION */}
-      <Card sx={{ mt: 3, borderRadius: 4 }}>
-        <CardContent>
-          <Typography fontWeight="bold">
-            📊 Visualisasi MFCC
-          </Typography>
+{/* MFCC */}
+<Card
+  sx={{
+    mt: 4,
+    borderRadius: 5,
+    background: "rgba(255,255,255,0.7)",
+  }}
+>
+  <CardContent sx={{ p: 4 }}>
+    <Typography
+      sx={{
+        fontWeight: "bold",
+        color: "#4b2e2e",
+        fontSize: 22,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      📊 Visualisasi MFCC
+      <InfoOutlinedIcon fontSize="small" />
+    </Typography>
 
-          <Typography sx={{ opacity: 0.6, fontSize: 13 }}>
-            Mel-Frequency Cepstral Coefficients (MFCC) adalah fitur yang umum digunakan dalam ASR untuk merepresentasikan karakteristik suara. Grafik di bawah menunjukkan 13 koefisien MFCC dari rekaman audio Anda.
-          </Typography>
+    {/* SIMPLE EXPLANATION (SHORT & CLEAR) */}
+    <Typography
+      sx={{
+        color: "#5b4636",
+        mt: 1,
+        fontSize: 14.5,
+        lineHeight: 1.7,
+      }}
+    >
+      MFCC adalah “sidik jari suara” yang digunakan komputer untuk mengenali
+      pola suara. Nilai ini bukan kata, tapi representasi karakter suara yang
+      dipakai model SVM untuk membedakan hewan.
+    </Typography>
 
-          <Divider sx={{ my: 2 }} />
+    <Divider sx={{ my: 3 }} />
 
-          {/* EMPTY STATE */}
-          {mfcc.length === 0 ? (
-            <Box
-              sx={{
-                height: 160,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#0f172a",
-                borderRadius: 3,
-              }}
-            >
-              <Typography sx={{ opacity: 0.5 }}>
-                Visualisasi MFCC akan muncul di sini setelah Anda merekam suara
-              </Typography>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: 0.5,
-                height: 160,
-                overflowX: "auto",
-                p: 1,
-                background: "#0f172a",
-                borderRadius: 3,
-              }}
-            >
-              {mfcc.slice(0, 60).map((v, i) => {
-                const height = Math.min(Math.abs(v) * 3, 140);
+    {/* EMPTY */}
+    {mfcc.length === 0 ? (
+      <Box
+        sx={{
+          height: 200,
+          borderRadius: 4,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "rgba(15,23,42,0.9)",
+          flexDirection: "column",
+        }}
+      >
+        <Typography sx={{ color: "white", opacity: 0.6 }}>
+          Belum ada data MFCC
+        </Typography>
+        <Typography sx={{ color: "white", opacity: 0.4, fontSize: 12 }}>
+          Rekam suara untuk melihat pola fitur audio
+        </Typography>
+      </Box>
+    ) : (
+      <Box
+        sx={{
+          position: "relative",
+          height: 220,
+          borderRadius: 4,
+          background: "rgba(15,23,42,0.95)",
+          p: 2,
+          overflowX: "auto",
+        }}
+      >
+        {/* CENTER LINE */}
+        <Box
+          sx={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: "50%",
+            height: "1px",
+            background: "rgba(255,255,255,0.15)",
+          }}
+        />
 
-                return (
-                  <Box
-                    key={i}
-                    sx={{
-                      minWidth: 6,
-                      height: `${height}px`,
-                      borderRadius: 2,
-                      background:
-                        "linear-gradient(180deg, #60a5fa, #3b82f6, #1d4ed8)",
-                      boxShadow:
-                        "0 0 8px rgba(59,130,246,0.4)",
-                    }}
-                  />
-                );
-              })}
-            </Box>
-          )}
+        {/* BARS */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            height: "100%",
+            gap: 0.6,
+          }}
+        >
+          {mfcc.slice(0, 60).map((v, i) => {
+            const height = Math.min(Math.abs(v) * 4, 90);
+            const isPositive = v >= 0;
 
-          {/* INFO TAGS */}
-          <Box mt={2} sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-            <Chip label="13 Koefisien MFCC" size="small" />
-            <Chip label="Frame-based Processing" size="small" />
-            <Chip label="ASR Feature Input" size="small" />
-          </Box>
-        </CardContent>
-      </Card>
+            return (
+              <Box
+                key={i}
+                sx={{
+                  width: 8,
+                  height: `${height}px`,
+                  borderRadius: 2,
+                  background: isPositive
+                    ? "#22c55e"
+                    : "#3b82f6",
+                  alignSelf: isPositive
+                    ? "flex-end"
+                    : "flex-start",
+                }}
+              />
+            );
+          })}
+        </Box>
+
+        {/* SIMPLE LEGEND */}
+        <Box
+          sx={{
+            mt: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: 11,
+            color: "rgba(255,255,255,0.6)",
+          }}
+        >
+          <span>🔵 Negatif</span>
+          <span>🟢 Positif</span>
+        </Box>
+      </Box>
+    )}
+
+    {/* SIMPLE SUMMARY */}
+    {mfcc.length > 0 && (
+      <Box
+        sx={{
+          mt: 3,
+          display: "flex",
+          gap: 1,
+          flexWrap: "wrap",
+        }}
+      >
+        <Chip label={`Features: ${mfcc.length}`} />
+        <Chip label="MFCC Audio Pattern" />
+        <Chip label="SVM Input Feature" />
+      </Box>
+    )}
+  </CardContent>
+</Card>
     </Box>
   );
 }
