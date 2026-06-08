@@ -190,8 +190,7 @@ Total: **400 audio**
 ---
 
 ## 📌 Kesimpulan
-Model SVM memiliki performa terbaik dalam mengenali suara hewan berdasarkan fitur MFCC.
-# 📌 Kesimpulan
+
 
 Berdasarkan hasil implementasi dan pengujian yang telah dilakukan, aplikasi **ZooVoice AI** berhasil mengintegrasikan teknologi **Automatic Speech Recognition (ASR)** dan **Text-to-Speech (TTS)** dalam satu platform interaktif untuk pengenalan nama hewan berbasis suara.
 
