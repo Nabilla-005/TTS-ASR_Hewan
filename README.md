@@ -4,7 +4,8 @@ ZooVoice AI adalah aplikasi web interaktif yang menggabungkan teknologi Automati
 
 Pada modul ASR, sistem mengenali 10 kelas nama hewan, yaitu ayam, bebek, cicak, gajah, harimau, kelinci, kucing, panda, sapi, dan zebra. Proses pengenalan suara dilakukan menggunakan ekstraksi fitur MFCC dan model klasifikasi Support Vector Machine (SVM).
 
-Pada modul TTS, pengguna dapat memasukkan teks, memilih gender suara, memilih kecepatan bicara, memutar audio, dan mengunduh hasil suara dalam format MP3
+Pada modul TTS, pengguna dapat memasukkan teks, memilih gender suara, memilih kecepatan bicara, memutar audio, dan mengunduh hasil suara dalam format MP3.
+
 ---
 
 ## 📌 Detail Kelompok
