@@ -191,6 +191,16 @@ Total: **400 audio**
 
 ## 📌 Kesimpulan
 Model SVM memiliki performa terbaik dalam mengenali suara hewan berdasarkan fitur MFCC.
+# 📌 Kesimpulan
+
+Berdasarkan hasil implementasi dan pengujian yang telah dilakukan, aplikasi **ZooVoice AI** berhasil mengintegrasikan teknologi **Automatic Speech Recognition (ASR)** dan **Text-to-Speech (TTS)** dalam satu platform interaktif untuk pengenalan nama hewan berbasis suara.
+
+Pada modul ASR, proses pengenalan suara dilakukan melalui beberapa tahapan, yaitu perekaman audio, konversi format, ekstraksi fitur menggunakan **Mel-Frequency Cepstral Coefficients (MFCC)** sebanyak 40 koefisien, normalisasi data menggunakan **Standard Scaler**, dan klasifikasi menggunakan **Support Vector Machine (SVM)**. Hasil pengujian menunjukkan bahwa model SVM memperoleh akurasi sebesar **98,75%**, lebih tinggi dibandingkan Random Forest yang memperoleh akurasi **92,5%**. Hal ini menunjukkan bahwa SVM lebih efektif dalam mengklasifikasikan fitur MFCC pada dataset yang digunakan.
+
+Pada modul TTS, sistem berhasil mengubah teks menjadi suara yang natural menggunakan model **Eleven Multilingual v2** dari ElevenLabs. Pengguna dapat memilih jenis suara dan kecepatan bicara sehingga menghasilkan pengalaman interaksi yang lebih fleksibel dan menarik.
+
+Secara keseluruhan, ZooVoice AI berhasil memenuhi tujuan proyek yaitu membangun aplikasi yang mampu mengenali suara pengguna dan mengubah teks menjadi suara secara otomatis. Hasil yang diperoleh menunjukkan bahwa kombinasi **MFCC dan SVM** merupakan pendekatan yang efektif untuk klasifikasi suara pada dataset hewan yang digunakan, serta integrasi teknologi ASR dan TTS dapat menciptakan sistem interaksi suara yang lebih intuitif dan mudah digunakan.
+
 
 ---
 
