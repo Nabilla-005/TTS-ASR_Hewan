@@ -1,6 +1,10 @@
 # 🐾 ZooVoice AI  
 ### Automatic Speech Recognition (ASR) & Text-to-Speech (TTS) – Hewan
+ZooVoice AI adalah aplikasi web interaktif yang menggabungkan teknologi Automatic Speech Recognition (ASR) dan Text-to-Speech (TTS). Aplikasi ini digunakan untuk mengenali suara nama hewan dalam Bahasa Indonesia serta mengubah teks menjadi suara menggunakan ElevenLabs API.
 
+Pada modul ASR, sistem mengenali 10 kelas nama hewan, yaitu ayam, bebek, cicak, gajah, harimau, kelinci, kucing, panda, sapi, dan zebra. Proses pengenalan suara dilakukan menggunakan ekstraksi fitur MFCC dan model klasifikasi Support Vector Machine (SVM).
+
+Pada modul TTS, pengguna dapat memasukkan teks, memilih gender suara, memilih kecepatan bicara, memutar audio, dan mengunduh hasil suara dalam format MP3
 ---
 
 ## 📌 Detail Kelompok
@@ -204,3 +208,38 @@ Secara keseluruhan, ZooVoice AI berhasil memenuhi tujuan proyek yaitu membangun 
 ---
 
 # 📁 Struktur Project
+```bash
+ZooVoice-AI/
+│
+├── src/
+│   ├── pages/
+│   │   ├── ASRPage.tsx
+│   │   ├── TTSPage.tsx
+│   │   └── Dashboard.tsx
+│   ├── components/
+│   └── main.tsx
+│
+├── backendASR/
+│   ├── main.py
+│   ├── utils.py
+│   ├── models/
+│   │   ├── svm_model.pkl
+│   │   ├── svm_scaler.pkl
+│   │   └── svm_label_encoder.pkl
+│   └── temp/
+│
+├── dataset/
+│   ├── ayam/
+│   ├── bebek/
+│   ├── cicak/
+│   ├── gajah/
+│   ├── harimau/
+│   ├── kelinci/
+│   ├── kucing/
+│   ├── panda/
+│   ├── sapi/
+│   └── zebra/
+│
+├── package.json
+├── README.md
+└── .env
